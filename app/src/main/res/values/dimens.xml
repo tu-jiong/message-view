@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="divider_height">1dp</dimen>
+    <dimen name="sp_12">12sp</dimen>
+    <dimen name="dp_8">8dp</dimen>
+
+    <dimen name="picker_default_text_size">12sp</dimen>
+    <dimen name="picker_toolbar_height">40dp</dimen>
+    <dimen name="picker_dialog_height">190dp</dimen>
+    <dimen name="textview_default_padding">5dp</dimen>
+    <dimen name="picker_line_width">1dp</dimen>
+    <dimen name="picker_line_mar">15dp</dimen>
+    <dimen name="picker_height">230dp</dimen>
+
+    <dimen name="item_reward_padding_left">15dp</dimen>
+    <dimen name="item_reward_padding_top">5dp</dimen>
+    <dimen name="item_reward_padding_right">15dp</dimen>
+    <dimen name="item_reward_padding_bottom">0dp</dimen>
+    <dimen name="item_reward_padding_first_top">10dp</dimen>
+
+    <dimen name="main_spanner_padding">5dp</dimen>
+    <dimen name="main_bottom_height">58dp</dimen>
+</resources>
