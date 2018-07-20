@@ -3,6 +3,7 @@
 
     <dimen name="divider_height">1dp</dimen>
     <dimen name="sp_12">12sp</dimen>
+    <dimen name="sp_24">18sp</dimen>
     <dimen name="dp_8">8dp</dimen>
 
     <dimen name="picker_default_text_size">12sp</dimen>

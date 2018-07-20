@@ -4,9 +4,12 @@ package com.jm.messageview;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.Layout;
@@ -105,7 +108,7 @@ public class MessageView extends View {
         paint = new TextPaint();
         paint.setColor(color);
         paint.setAntiAlias(true);
-        paint.setTextSize(getResources().getDimensionPixelSize(R.dimen.sp_12));
+        paint.setTextSize(getResources().getDimensionPixelSize(R.dimen.sp_24));
         paint.setTextAlign(Paint.Align.LEFT);
         fontMetrics = paint.getFontMetrics();
     }
@@ -188,10 +191,18 @@ public class MessageView extends View {
         return savedState;
     }
 
+    private Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.bitmap);
+    private Paint bPaint = new Paint();
+
     private void drawText(Canvas canvas, StaticLayout staticLayout, float y) {
         canvas.save();
+
         canvas.translate(0, y);
+        canvas.drawBitmap(bitmap, null, new Rect(0, 0, 96, staticLayout.getHeight()), bPaint);
+
+        canvas.translate(96, 0);
         staticLayout.draw(canvas);
+
         canvas.restore();
     }
 
