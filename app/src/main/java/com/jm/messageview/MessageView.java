@@ -35,12 +35,12 @@ public class MessageView extends View {
     private static final int INTERVAL = 2000;
 
     private List<Entry> list;
-    private TextPaint paint;
+    private TextPaint textPaint;
+    private Paint paint;
     private Paint.FontMetrics fontMetrics;
     private float dividerHeight;
     private int color;
     private int index;
-
     private ValueAnimator animator;
 
     private Runnable action = new Runnable() {
@@ -105,12 +105,14 @@ public class MessageView extends View {
     private void init() {
         dividerHeight = getResources().getDimension(R.dimen.dp_8);
         color = Color.parseColor("#4a4a4a");
-        paint = new TextPaint();
-        paint.setColor(color);
+        textPaint = new TextPaint();
+        textPaint.setColor(color);
+        textPaint.setAntiAlias(true);
+        textPaint.setTextSize(getResources().getDimensionPixelSize(R.dimen.sp_24));
+        textPaint.setTextAlign(Paint.Align.LEFT);
+        fontMetrics = textPaint.getFontMetrics();
+        paint = new Paint();
         paint.setAntiAlias(true);
-        paint.setTextSize(getResources().getDimensionPixelSize(R.dimen.sp_24));
-        paint.setTextAlign(Paint.Align.LEFT);
-        fontMetrics = paint.getFontMetrics();
     }
 
     public void loadMessage() {
@@ -137,7 +139,7 @@ public class MessageView extends View {
         if (hasMessage()) {
             for (int i = 0; i < list.size(); i++) {
                 Entry entry = list.get(i);
-                entry.makeLayout(paint, width - getPaddingLeft() - getPaddingRight());
+                entry.measure(textPaint, width - getPaddingLeft() - getPaddingRight());
                 if (i < MAX_LINE) {
                     height += entry.getHeight();
                 }
@@ -162,7 +164,7 @@ public class MessageView extends View {
                 if (animator != null) {
                     offset = (int) animator.getAnimatedValue();
                 }
-                drawText(canvas, entry.getStaticLayout(), y - offset);
+                entry.draw(canvas, paint, y - offset);
             }
         }
     }
@@ -191,21 +193,6 @@ public class MessageView extends View {
         return savedState;
     }
 
-    private Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.bitmap);
-    private Paint bPaint = new Paint();
-
-    private void drawText(Canvas canvas, StaticLayout staticLayout, float y) {
-        canvas.save();
-
-        canvas.translate(0, y);
-        canvas.drawBitmap(bitmap, null, new Rect(0, 0, 96, staticLayout.getHeight()), bPaint);
-
-        canvas.translate(96, 0);
-        staticLayout.draw(canvas);
-
-        canvas.restore();
-    }
-
     private boolean hasMessage() {
         return list != null && !list.isEmpty();
     }
@@ -222,13 +209,18 @@ public class MessageView extends View {
         private StaticLayout staticLayout;
         private String prefix;
         private String suffix;
+        private Bitmap bitmap;
 
         Entry(String prefix, String suffix) {
             this.prefix = prefix;
             this.suffix = suffix;
+            this.bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.bitmap);
         }
 
-        void makeLayout(TextPaint paint, int width) {
+        void measure(TextPaint paint, int width) {
+            if (bitmap != null) {
+                width = width - bitmap.getWidth();
+            }
             StringBuilder builder = new StringBuilder();
             String tmp = builder.append(prefix).append(suffix).toString();
             StaticLayout tmpStaticLayout = new StaticLayout(tmp, paint, width, Layout.Alignment.ALIGN_NORMAL, 1f, 0f, false);
@@ -243,15 +235,24 @@ public class MessageView extends View {
             staticLayout = new StaticLayout(text, paint, width, Layout.Alignment.ALIGN_NORMAL, 1f, 0f, false);
         }
 
-        StaticLayout getStaticLayout() {
-            return staticLayout;
-        }
-
         int getHeight() {
             if (staticLayout == null) {
                 return 0;
             }
             return staticLayout.getHeight();
+        }
+
+        void draw(Canvas canvas, Paint paint, float offset) {
+            canvas.save();
+            canvas.translate(0, offset);
+            int x = 0;
+            if (bitmap != null) {
+                x = bitmap.getWidth();
+                canvas.drawBitmap(bitmap, null, new Rect(0, 0, x, staticLayout.getHeight()), paint);
+            }
+            canvas.translate(x, 0);
+            staticLayout.draw(canvas);
+            canvas.restore();
         }
     }
 
@@ -284,12 +285,5 @@ public class MessageView extends View {
                 return new SavedState[size];
             }
         };
-    }
-
-
-    public static abstract class Adapter {
-        public void draw(Canvas canvas) {
-
-        }
     }
 }
